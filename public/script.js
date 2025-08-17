@@ -24,13 +24,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeAboutModal = document.getElementById('close-about-modal');
     const closeContactModal = document.getElementById('close-contact-modal');
 
+    // --- Initial Check for DOM Elements ---
+    if (!videoUpload || !uploadLabel || !processBtn || !aboutLink || !contactLink) {
+        alert("A critical UI element could not be found. Please ensure the HTML is correct.");
+        return;
+    }
+
     let videoFile = null;
 
     // --- WebSocket Setup ---
+    logOutput.textContent = 'Attempting to connect to the server...\n';
     const socket = new WebSocket(`ws://${window.location.host}`);
 
     socket.onopen = () => {
         console.log('WebSocket connection established.');
+        logOutput.textContent += 'Successfully connected to the server.\n';
     };
 
     socket.onmessage = (event) => {
@@ -40,21 +48,20 @@ document.addEventListener('DOMContentLoaded', () => {
             logOutput.textContent += data.message + '\n';
             logOutput.scrollTop = logOutput.scrollHeight; // Auto-scroll
         } else if (data.type === 'progress') {
-            // Processing takes up the second half of the progress bar (50% to 100%)
             const processingPercent = data.percent < 0 ? 0 : Math.round(data.percent);
             const totalProgress = 50 + Math.round(processingPercent / 2);
             statusText.textContent = `Server is processing... ${processingPercent}%`;
             progressBar.style.width = `${totalProgress}%`;
         } else if (data.type === 'done') {
             statusText.textContent = 'Processing Complete!';
-            progressBar.style.width = `100%`; // Fill the bar on completion
+            progressBar.style.width = `100%`;
             
-            // Hide progress section after a short delay
             setTimeout(() => {
                 progressSection.classList.add('hidden');
             }, 500);
 
             processBtn.disabled = false;
+            processBtn.textContent = 'Upload & Process Video';
             
             resultVideo.src = data.downloadUrl;
             downloadLink.href = data.downloadUrl;
@@ -65,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
             logOutput.textContent += `\n\nSERVER ERROR: ${data.message}\n`;
             progressSection.classList.add('hidden');
             processBtn.disabled = false;
+            processBtn.textContent = 'Upload & Process Video';
         }
     };
 
@@ -114,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const processVideoWithXHR = () => {
         processBtn.disabled = true;
+        processBtn.textContent = 'Uploading...';
         progressSection.classList.remove('hidden');
         resultSection.classList.add('hidden');
         statusText.textContent = 'Preparing to upload...';
@@ -129,12 +138,12 @@ document.addEventListener('DOMContentLoaded', () => {
         xhr.upload.addEventListener('progress', (event) => {
             if (event.lengthComputable) {
                 const percentComplete = Math.round((event.loaded / event.total) * 100);
-                // Upload takes up the first half of the progress bar (0% to 50%)
                 const totalProgress = Math.round(percentComplete / 2);
                 statusText.textContent = `Uploading file... ${percentComplete}%`;
                 progressBar.style.width = `${totalProgress}%`; 
                 
                 if (percentComplete === 100) {
+                    processBtn.textContent = 'Processing...';
                     statusText.textContent = 'Upload complete. Analyzing audio...';
                     logOutput.textContent = 'This may take a while for large files. Please wait.\n';
                 }
@@ -146,14 +155,15 @@ document.addEventListener('DOMContentLoaded', () => {
                  statusText.textContent = 'An error occurred during upload!';
                  logOutput.textContent += `\n\nUPLOAD ERROR: ${xhr.responseText}\n`;
                  processBtn.disabled = false;
+                 processBtn.textContent = 'Upload & Process Video';
             }
-            // Success is now handled by the WebSocket 'done' message
         };
         
         xhr.onerror = () => {
             statusText.textContent = 'A network error occurred!';
             logOutput.textContent += `\n\nNETWORK ERROR: Could not connect to the server.\n`;
             processBtn.disabled = false;
+            processBtn.textContent = 'Upload & Process Video';
         };
 
         xhr.open('POST', '/process', true);
