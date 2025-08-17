@@ -13,7 +13,6 @@
 
 This tool provides a simple and powerful interface for users to upload large video files. The server handles all the heavy processing, providing real-time feedback before allowing users to preview and download the final, trimmed video.
 
-*(Optional: Insert a GIF of the application in action here)*
 
 ---
 
@@ -35,17 +34,17 @@ The application follows a client-server model where the frontend is responsible 
 
 ```mermaid
 graph TD
-    A[User's Browser] -- 1. Upload Video (HTTP Post) --> B[Node.js Server];
-    B -- 2. Store Temp File --> C[Uploads Directory];
-    B -- 3. Analyze Audio --> D[FFmpeg];
-    D -- 4. Return Silence Timestamps --> B;
-    B -- 5. Process & Trim Video --> D;
-    D -- 6. Send Progress % --> B;
-    B -- 7. Broadcast Progress (WebSocket) --> A;
-    D -- 8. Save Final Video --> E[Public/Videos Directory];
-    B -- 9. Send 'Done' Link (WebSocket) --> A;
-    A -- 10. Preview/Download Video (HTTP Get) --> E;
-    B -- 11. Schedule Deletion (10 mins) --> E;
+    A[User's Browser] -- Upload Video (HTTP Post) --> B[Node.js Server];
+    B -- Store Temp File --> C[Uploads Directory];
+    B -- Analyze Audio --> D[FFmpeg];
+    D -- Return Silence Timestamps --> B;
+    B -- Process & Trim Video --> D;
+    D -- Send Progress % --> B;
+    B -- Broadcast Progress (WebSocket) --> A;
+    D -- Save Final Video --> E[Public/Videos Directory];
+    B -- Send 'Done' Link (WebSocket) --> A;
+    A -- Preview/Download Video (HTTP Get) --> E;
+    B -- Schedule Deletion (10 mins) --> E;
 ```
 
 ---
@@ -61,7 +60,7 @@ graph TD
 
 ### Frontend
 -   **HTML5:** Standard markup for the web application structure.
--   **Tailwind CSS:** A utility-first CSS framework for styling the user interface.
+-   **Tailwind CSS:** Cooler version of css.
 -   **Vanilla JavaScript:** Used for DOM manipulation, event handling (including drag-and-drop), and WebSocket communication.
 
 ---
