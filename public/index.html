@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Silence Remover</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="text-white">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-gray-900">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="font-bold text-xl text-white">deetalk</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a id="about-link" href="javascript:void(0);" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">About</a>
+                        <a id="contact-link" href="javascript:void(0);" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- About Modal -->
+    <div id="about-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-gray-700 rounded-2xl p-8 max-w-md w-full relative shadow-xl border border-gray-600">
+            <button id="close-about-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl leading-none">&times;</button>
+            <h2 class="text-2xl font-bold mb-4 text-white">About This Project</h2>
+            <p class="text-gray-300">
+                I am a recent computer science grad from Penn State with a passion for creating software that make lives easier as well as software thats accessible.
+                <br><br>
+                I love making videos and this tool right here will help countless creators make content faster.
+            </p>
+        </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div id="contact-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-gray-700 rounded-2xl p-8 max-w-md w-full relative shadow-xl border border-gray-600">
+            <button id="close-contact-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl leading-none">&times;</button>
+            <h2 class="text-2xl font-bold mb-4 text-white">Get In Touch</h2>
+            <p class="text-gray-300">
+                You can find me on the following platforms:
+            </p>
+            <ul class="text-gray-300 mt-4 space-y-2">
+                <li><strong>YouTube:</strong> <a href="https://www.youtube.com/@DeeMedia21" target="_blank" class="text-blue-400 hover:underline">youtube.com/@DeeMedia21</a></li>
+                <li><strong>Email:</strong> <a href="mailto:dixonfzor@gmail.com" class="text-blue-400 hover:underline">dixonfzor@gmail.com</a></li>
+                <li><strong>LinkedIn:</strong> <a href="https://linkedinn.co/in/dixon-zor" target="_blank" class="text-blue-400 hover:underline">linkedinn.co/in/dixon-zor</a></li>
+            </ul>
+        </div>
+    </div>
+
+
+    <!-- Main Content -->
+    <div class="flex items-center justify-center min-h-[calc(100vh-4rem)] p-4">
+        <div class="w-full max-w-2xl bg-gray-800 rounded-2xl shadow-2xl p-6 md:p-8 space-y-6 border border-gray-700">
+            <!-- Header -->
+            <div class="text-center">
+                <h1 class="text-3xl font-bold text-gray-100">Video Silence Remover</h1>
+                <p class="text-gray-400 mt-2">Trim dead air from your videos, right in your browser.</p>
+            </div>
+
+            <!-- File Input -->
+            <div id="upload-section">
+                <label for="video-upload" class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-600 border-dashed rounded-lg cursor-pointer bg-gray-700 hover:bg-gray-600 transition-colors">
+                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                        <svg class="w-10 h-10 mb-4 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/></svg>
+                        <p class="mb-2 text-sm text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                        <p class="text-xs text-gray-500">MP4, MOV, WEBM, MKV, etc.</p>
+                    </div>
+                    <input id="video-upload" type="file" class="hidden" accept=".mp4,.mov,.webm,.mkv,.avi" />
+                </label>
+                <p id="file-name" class="mt-2 text-center text-sm text-gray-400"></p>
+            </div>
+
+            <!-- Settings -->
+            <div id="settings-section" class="space-y-4">
+                <div>
+                    <label for="threshold" class="block mb-2 text-sm font-medium text-gray-300">2. Silence Threshold</label>
+                    <div class="flex items-center space-x-4">
+                        <input id="threshold" type="range" min="-60" max="0" value="-40" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer">
+                        <span id="threshold-value" class="font-mono text-sm bg-gray-700 px-2 py-1 rounded-md w-16 text-center">-40 dB</span>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">Anything quieter than this will be considered silence.</p>
+                </div>
+                <div>
+                    <label for="duration" class="block mb-2 text-sm font-medium text-gray-300">3. Minimum Silence Duration</label>
+                     <div class="flex items-center space-x-4">
+                        <input id="duration" type="range" min="0.1" max="5" value="0.5" step="0.1" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer">
+                        <span id="duration-value" class="font-mono text-sm bg-gray-700 px-2 py-1 rounded-md w-16 text-center">0.5 s</span>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">Silence must last at least this long to be removed.</p>
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <div>
+                <button id="process-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed">
+                    Upload & Process Video
+                </button>
+            </div>
+
+            <!-- Progress & Log -->
+            <div id="progress-section" class="hidden bg-gray-900 p-4 rounded-lg space-y-3">
+                <div class="flex items-center justify-center space-x-3">
+                    <div class="loader"></div>
+                    <p id="status-text" class="text-lg font-medium">Processing, please wait...</p>
+                </div>
+                <!-- NEW: Progress Bar -->
+                <div class="w-full bg-gray-700 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                </div>
+                <pre id="log-output" class="w-full h-32 bg-black text-xs text-gray-300 font-mono overflow-y-auto p-2 rounded-md"></pre>
+            </div>
+
+            <!-- Result -->
+            <div id="result-section" class="hidden text-center">
+                <h2 class="text-2xl font-bold text-green-400 mb-4">Processing Complete!</h2>
+                <video id="result-video" controls class="w-full rounded-lg mb-4"></video>
+                <a id="download-link" class="w-full inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">
+                    Download Video
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Local Script -->
+    <script src="script.js"></script>
+</body>
+</html>

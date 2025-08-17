@@ -1,0 +1,19 @@
+{
+  "name": "video-silence-remover-server",
+  "version": "1.0.0",
+  "description": "A server-based application to remove silence from videos.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "deetalk",
+  "license": "ISC",
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@ffprobe-installer/ffprobe": "^2.1.2",
+    "express": "^4.18.2",
+    "fluent-ffmpeg": "^2.1.2",
+    "multer": "^1.4.5-lts.1",
+    "ws": "^8.13.0"
+  }
+}
